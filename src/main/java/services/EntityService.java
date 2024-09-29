@@ -90,8 +90,7 @@ public class EntityService {
                 .when()
                 .get(BASE_PATH_GET_ALL)
                 .then()
-                .statusCode(200) // Проверка, что статус ответа 200
-                // Проверка наличия обязательных полей в ответе
+                .statusCode(200)
                 .body("entity", notNullValue())
                 .body("entity.addition", notNullValue())
                 .body("entity.addition.additional_info", notNullValue())
@@ -123,9 +122,8 @@ public class EntityService {
                 .when()
                 .get(BASE_PATH_GET_BY_ID)
                 .then()
-                .log().body() // Логирование тела ответа
-                .statusCode(200) // Проверка, что статус ответа 200
-                // Проверка наличия обязательных полей
+                .log().body()
+                .statusCode(200)
                 .body("id", equalTo(id))
                 .body("title", notNullValue())
                 .body("verified", notNullValue())
@@ -147,6 +145,8 @@ public class EntityService {
      */
     public static void deleteEntityById(int id) {
         int retryCount = 3;
+        int waitTime = 2000;
+
         while (retryCount > 0) {
             try {
                 given()
@@ -163,10 +163,18 @@ public class EntityService {
             } catch (AssertionError e) {
                 retryCount--;
                 System.err.println("Ошибка при удалении сущности с ID " + id + ": " + e.getMessage());
+
                 if (retryCount == 0) {
                     throw e;
                 }
+
                 System.out.println("Повторная попытка удаления сущности с ID " + id + " (" + (3 - retryCount) + " из 3)");
+                try {
+                    Thread.sleep(waitTime);
+                } catch (InterruptedException interruptedException) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException("Процесс ожидания был прерван", interruptedException);
+                }
             }
         }
     }
@@ -186,7 +194,7 @@ public class EntityService {
                 .when()
                 .patch(BASE_PATH_PATCH)
                 .then()
-                .statusCode(204) // Проверка, что статус ответа 204 (успешное обновление)
+                .statusCode(204)
                 .extract() // Извлечение объекта Response
                 .response();
 

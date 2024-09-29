@@ -50,7 +50,7 @@ public class BaseApiTest {
      * Метод, который выполняется после завершения всех тестов в классе (аналог cleanup).
      * Удаляет все созданные в ходе тестов сущности.
      */
-    @AfterClass
+    @AfterClass(alwaysRun = true)
     public void cleanup() {
         // Удаляем все созданные сущности из списка
         for (int entityId : previouslyCreatedEntityIds) {

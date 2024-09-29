@@ -14,6 +14,6 @@ public class CreateEntityTest extends BaseApiTest {
     @Test
     public void testCreateEntity() {
         // Проверяем, что сущности были созданы и список содержит не менее 3 ID
-        assert previouslyCreatedEntityIds.size() >= 3 : "Не удалось создать три сущности. Список должен содержать не менее 3 ID.";
+        assert previouslyCreatedEntityIds.size() == 3 : "Не удалось создать три сущности. Список должен содержать не менее 3 ID.";
     }
 }
